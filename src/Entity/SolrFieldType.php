@@ -31,10 +31,10 @@ use Drupal\search_api_solr_multilingual\Utility\Utility;
  *     "uuid" = "uuid"
  *   },
  *   links = {
- *     "edit-form" = "/admin/config/search/search-api/server/{search_api_server}/multilingual/solr_field_type/{solr_field_type}",
- *     "delete-form" = "/admin/config/search/search-api/server/{search_api_server}/multilingual/solr_field_type/{solr_field_type}/delete",
- *     "export-form" = "/admin/config/search/search-api/server/{search_api_server}/multilingual/solr_field_type/{solr_field_type}/export",
- *     "collection" = "/admin/config/search/search-api/server/{search_api_server}/multilingual/solr_field_type"
+ *     "edit-form" = "/admin/config/search/search-api/solr_field_type/{solr_field_type}",
+ *     "delete-form" = "/admin/config/search/search-api/solr_field_type/{solr_field_type}/delete",
+ *     "export-form" = "/admin/config/search/search-api/solr_field_type/{solr_field_type}/export",
+ *     "collection" = "/admin/config/search/search-api/server/{search_api_server}/solr_field_type"
  *   }
  * )
  */
@@ -333,7 +333,11 @@ class SolrFieldType extends ConfigEntityBase implements SolrFieldTypeInterface {
   protected function urlRouteParameters($rel) {
     $uri_route_parameters = parent::urlRouteParameters($rel);
 
-    $uri_route_parameters['search_api_server'] = \Drupal::routeMatch()->getRawParameter('search_api_server');
+    if ('collection' == $rel) {
+      $uri_route_parameters['search_api_server'] = \Drupal::routeMatch()->getRawParameter('search_api_server')
+        // To be removed when https://www.drupal.org/node/2919648 is fixed.
+        ?: 'core_issue_2919648_workaround';
+    }
 
     return $uri_route_parameters;
   }
